@@ -1,2 +1,133 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+using System.Diagnostics;
+
+namespace TheSnakeProject
+{
+    internal class Project
+    {
+        static void Main(string[] args)
+        {
+            int SleepTime = 500;                                            // delay interval
+            int x = 0;                                                      // starting position x
+            int y = 0;                                                      // starting position y
+
+            List<int> PositionCoordinates = new List<int>();                // create first part of snake as the first entries of the list
+            PositionCoordinates.Add(x);
+            PositionCoordinates.Add(y);
+
+            bool Dead = true;
+
+            // choose action:
+            // w = up, s = down, a = left, d = right, q = add another link to the snake
+            while (Dead == true)
+            {
+                ConsoleKeyInfo Button = Console.ReadKey();                  // read input from keyboard
+
+                if (Button.Key == ConsoleKey.W)
+                {
+                    MoveUp(PositionCoordinates, SleepTime);
+                }
+
+                if (Button.Key == ConsoleKey.S)
+                {
+                    MoveDown(PositionCoordinates, SleepTime);
+                }
+                if (Button.Key == ConsoleKey.A)
+                {
+                    MoveLeft(PositionCoordinates, SleepTime);
+                }
+                if (Button.Key == ConsoleKey.D)
+                {
+                    MoveRight(PositionCoordinates, SleepTime);
+                }
+                if (Button.Key == ConsoleKey.Q)
+                {
+                    AddPart(PositionCoordinates);
+                }
+            }
+        }
+
+        // method to add additional links
+        static void AddPart(List<int> UpdatePosition)
+        {
+            UpdatePosition.Add(UpdatePosition[0]);
+            UpdatePosition.Add(UpdatePosition[1]);
+        }
+
+        // method to move
+        static void MoveUp(List<int> UpdatePosition, int Sleep)
+        {
+            while (!Console.KeyAvailable)                                       // read if key is available
+            {
+                if (UpdatePosition.Count > 2)                                   // length of list without the initial entries
+                {
+                    for (int j = UpdatePosition.Count - 1; j > 1;)              // update coordinates for each additional link starting from behind
+                    {
+                        UpdatePosition[j] = UpdatePosition[j - 2];
+                        j = j - 1;
+                    }
+                }
+                UpdatePosition[1]++;                                            // "move" first link one step
+                UpdatePosition.ForEach(i => Console.Write("{0}\t", i));         // write the position of each link in order from left to right
+                Console.WriteLine("");
+                Thread.Sleep(Sleep);                                            // delay with length SleepTime
+            }
+        }
+
+        static void MoveDown(List<int> UpdatePosition, int Sleep)
+        {
+            while (!Console.KeyAvailable)
+            {
+                if (UpdatePosition.Count > 2)
+                {
+                    for (int j = UpdatePosition.Count - 1; j > 1;)
+                    {
+                        UpdatePosition[j] = UpdatePosition[j - 2];
+                        j = j - 1;
+                    }
+                }
+                UpdatePosition[1]--;
+                UpdatePosition.ForEach(i => Console.Write("{0}\t", i));
+                Console.WriteLine("");
+                Thread.Sleep(Sleep);
+            }
+        }
+
+        static void MoveLeft(List<int> UpdatePosition, int Sleep)
+        {
+            while (!Console.KeyAvailable)
+            {
+                if (UpdatePosition.Count > 2)
+                {
+                    for (int j = UpdatePosition.Count - 1; j > 1;)
+                    {
+                        UpdatePosition[j] = UpdatePosition[j - 2];
+                        j = j - 1;
+                    }
+                }
+                UpdatePosition[0]--;
+                UpdatePosition.ForEach(i => Console.Write("{0}\t", i));
+                Console.WriteLine("");
+                Thread.Sleep(Sleep);
+            }
+        }
+
+        static void MoveRight(List<int> UpdatePosition, int Sleep)
+        {
+            while (!Console.KeyAvailable)
+            {
+                if (UpdatePosition.Count > 2)
+                {
+                    for (int j = UpdatePosition.Count - 1; j > 1;)
+                    {
+                        UpdatePosition[j] = UpdatePosition[j - 2];
+                        j = j - 1;
+                    }
+                }
+                UpdatePosition[0]++;
+                UpdatePosition.ForEach(i => Console.Write("{0}\t", i));
+                Console.WriteLine("");
+                Thread.Sleep(Sleep);
+            }
+        }
+    }
+}
