@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 
 namespace TheSnakeProject
@@ -6,55 +7,47 @@ namespace TheSnakeProject
     {
         static void Main(string[] args)
         {
-            int SleepTime = 500;                                            // delay interval
-            int x = 0;                                                      // starting position x
-            int y = 0;                                                      // starting position y
-
-            List<int> PositionCoordinates = new List<int>();                // create first part of snake as the first entries of the list
-            PositionCoordinates.Add(x);
-            PositionCoordinates.Add(y);
-
-            bool Dead = true;
+            var Start = StartingConditions();
 
             // choose action:
             // w = up, s = down, a = left, d = right, q = add another link to the snake
-            while (Dead == true)
+            while (Start.Item2 == true)
             {
                 ConsoleKeyInfo Button = Console.ReadKey();                  // read input from keyboard
-
-                if (Button.Key == ConsoleKey.W)
-                {
-                    MoveUp(PositionCoordinates, SleepTime);
-                }
-
-                if (Button.Key == ConsoleKey.S)
-                {
-                    MoveDown(PositionCoordinates, SleepTime);
-                }
-                if (Button.Key == ConsoleKey.A)
-                {
-                    MoveLeft(PositionCoordinates, SleepTime);
-                }
-                if (Button.Key == ConsoleKey.D)
-                {
-                    MoveRight(PositionCoordinates, SleepTime);
-                }
-                if (Button.Key == ConsoleKey.Q)
-                {
-                    AddPart(PositionCoordinates);
-                }
+                Movement(Start.Item3, Start.Item1, Button);
             }
         }
 
-        // method to add additional links
-        static void AddPart(List<int> UpdatePosition)
+        public static Tuple<int, bool, List<int>> StartingConditions()
         {
-            UpdatePosition.Add(UpdatePosition[0]);
-            UpdatePosition.Add(UpdatePosition[1]);
+            Console.WriteLine("Choose level!");
+            Console.WriteLine("e = Easy, m = Medium, h = Hard");
+            ConsoleKeyInfo Button = Console.ReadKey();
+            int step = 0;
+            if (Button.Key == ConsoleKey.E)
+            {
+                step = 700;
+            }
+            if (Button.Key == ConsoleKey.M)
+            {
+                step = 500;
+            }
+            if (Button.Key == ConsoleKey.H)
+            {
+                step = 300;
+            }
+            int xStart = 0;
+            int yStart = 0;
+            bool Dead = true;
+            List<int> PositionCoordinates = new List<int>();                // create first part of snake as the first entries of the list
+            PositionCoordinates.Add(xStart);
+            PositionCoordinates.Add(yStart);
+            Console.WriteLine("Press w to start");
+            return Tuple.Create(step, Dead, PositionCoordinates);
         }
 
         // method to move
-        static void MoveUp(List<int> UpdatePosition, int Sleep)
+        static void Movement(List<int> UpdatePosition, int Sleep, ConsoleKeyInfo But)
         {
             while (!Console.KeyAvailable)                                       // read if key is available
             {
@@ -66,67 +59,31 @@ namespace TheSnakeProject
                         j = j - 1;
                     }
                 }
-                UpdatePosition[1]++;                                            // "move" first link one step
+                if (But.Key == ConsoleKey.W)
+                {
+                    UpdatePosition[1]++;                                        // "move" first link one step
+
+                }
+                if (But.Key == ConsoleKey.S)
+                {
+                    UpdatePosition[1]--;
+                }
+                if (But.Key == ConsoleKey.A)
+                {
+                    UpdatePosition[0]--;
+                }
+                if (But.Key == ConsoleKey.D)
+                {
+                    UpdatePosition[0]++;
+                }
                 UpdatePosition.ForEach(i => Console.Write("{0}\t", i));         // write the position of each link in order from left to right
                 Console.WriteLine("");
+                if (UpdatePosition[0] == 5 || UpdatePosition[1] == 5)
+                {
+                    UpdatePosition.Add(UpdatePosition[0]);
+                    UpdatePosition.Add(UpdatePosition[1]);
+                }
                 Thread.Sleep(Sleep);                                            // delay with length SleepTime
-            }
-        }
-
-        static void MoveDown(List<int> UpdatePosition, int Sleep)
-        {
-            while (!Console.KeyAvailable)
-            {
-                if (UpdatePosition.Count > 2)
-                {
-                    for (int j = UpdatePosition.Count - 1; j > 1;)
-                    {
-                        UpdatePosition[j] = UpdatePosition[j - 2];
-                        j = j - 1;
-                    }
-                }
-                UpdatePosition[1]--;
-                UpdatePosition.ForEach(i => Console.Write("{0}\t", i));
-                Console.WriteLine("");
-                Thread.Sleep(Sleep);
-            }
-        }
-
-        static void MoveLeft(List<int> UpdatePosition, int Sleep)
-        {
-            while (!Console.KeyAvailable)
-            {
-                if (UpdatePosition.Count > 2)
-                {
-                    for (int j = UpdatePosition.Count - 1; j > 1;)
-                    {
-                        UpdatePosition[j] = UpdatePosition[j - 2];
-                        j = j - 1;
-                    }
-                }
-                UpdatePosition[0]--;
-                UpdatePosition.ForEach(i => Console.Write("{0}\t", i));
-                Console.WriteLine("");
-                Thread.Sleep(Sleep);
-            }
-        }
-
-        static void MoveRight(List<int> UpdatePosition, int Sleep)
-        {
-            while (!Console.KeyAvailable)
-            {
-                if (UpdatePosition.Count > 2)
-                {
-                    for (int j = UpdatePosition.Count - 1; j > 1;)
-                    {
-                        UpdatePosition[j] = UpdatePosition[j - 2];
-                        j = j - 1;
-                    }
-                }
-                UpdatePosition[0]++;
-                UpdatePosition.ForEach(i => Console.Write("{0}\t", i));
-                Console.WriteLine("");
-                Thread.Sleep(Sleep);
             }
         }
     }
